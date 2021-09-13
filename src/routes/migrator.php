@@ -1,4 +1,6 @@
 <?php
 
-\Illuminate\Support\Facades\Route::get(config('migrator.route'), \Migrator\Http\Livewire\Migration\Read::class)
-    ->name('migrator.read');
+use Illuminate\Support\Facades\Route;
+
+Route::get(config('migrator.route'), \Migrator\Http\Livewire\Migration\Read::class)
+    ->name('migrator.read')->middleware('web');
