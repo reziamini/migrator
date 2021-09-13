@@ -1,6 +1,6 @@
 {
     "name": "rezaamini-ir/migrator",
-    "description": "Migrator is a migration manager for Laravel projects",
+    "description": "Migrator is a GUI migration manager for Laravel.",
     "license": "MIT",
     "authors": [
         {
