@@ -1,0 +1,43 @@
+{
+    "name": "rezaamini-ir/migrator",
+    "description": "Migrator is a migration manager for Laravel projects",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Reza Amini",
+            "email": "rezaaminiroyal@gmail.com"
+        }
+    ],
+
+    "require": {
+        "php": "^7.3|^8.0",
+        "illuminate/support": "^6.0|^7.0|^8.0",
+        "laravel/framework": "^6.0|^7.0|^8.0",
+        "livewire/livewire": "^1.0|^2.5"
+    },
+    "require-dev": {
+        "orchestra/testbench": "~3.7|^4.0|^5.0|^6.0"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "Migrator\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MigratorTest\\" : "tests/"
+        }
+    },
+
+    "extra": {
+        "laravel" : {
+            "providers" : [
+              "Migrator\\MigratorServiceProvider"
+            ]
+        }
+    },
+
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
