@@ -32,6 +32,11 @@ class Single extends Component
             '--path' => $path
         ]);
 
+        $this->dispatchBrowserEvent('show-message', [
+            'type' => 'success',
+            'message' => 'Migration was migrated.'
+        ]);
+
         $this->emit('migrationUpdated');
     }
 
@@ -41,6 +46,11 @@ class Single extends Component
 
         \Artisan::call('migrate:refresh', [
             '--path' => $path
+        ]);
+
+        $this->dispatchBrowserEvent('show-message', [
+            'type' => 'success',
+            'message' => 'Migration was refreshed.'
         ]);
 
         $this->emit('migrationUpdated');
@@ -53,6 +63,11 @@ class Single extends Component
         \Artisan::call('migrate:reset', [
             '--path' => $path,
             '--force' => true,
+        ]);
+
+        $this->dispatchBrowserEvent('show-message', [
+            'type' => 'success',
+            'message' => 'Table was dropped.'
         ]);
 
         $this->emit('migrationUpdated');

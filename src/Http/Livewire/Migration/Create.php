@@ -33,6 +33,11 @@ class Create extends Component
 
         Artisan::call('make:migration', $array);
 
+        $this->dispatchBrowserEvent('show-message', [
+            'type' => 'success',
+            'message' => 'Migration was created.'
+        ]);
+
         $this->reset();
         $this->emit('migrationUpdated');
     }
