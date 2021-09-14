@@ -4,15 +4,39 @@ namespace Migrator\Http\Livewire\Migration;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Str;
 
 class Read extends Component
 {
 
-    protected $listeners = ['migrationUpdated' => 'migrationUpdated'];
+    protected $listeners = ['migrationUpdated'];
 
     public function migrationUpdated()
     {
         // just to update the list
+    }
+
+    public function migrate()
+    {
+        Artisan::call('migrate');
+
+        $output = Artisan::output();
+
+        session()->flash('message', Str::replace("\n", '<br>', $output));
+
+        $this->redirect(route('migrator.read'));
+    }
+
+    public function fresh()
+    {
+        Artisan::call('migrate:fresh');
+
+        $output = Artisan::output();
+
+        session()->flash('message', Str::replace("\n", '<br>', $output));
+
+        $this->redirect(route('migrator.read'));
     }
 
     public function render()
