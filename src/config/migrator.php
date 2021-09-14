@@ -1,5 +1,9 @@
 <?php
 
 return [
-    'route' => 'migrator'
+    // Path to access migrator page
+    'route' => 'migrator',
+
+    // Middleware to authenticate users
+    'middleware' => 'auth'
 ];
