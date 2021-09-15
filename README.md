@@ -4,7 +4,7 @@ Migrator is a GUI migration manager for Laravel which you can create, manage and
 ![Migrator photo](https://podcode.ir/img/migrator.png)
 ## Installation:
 
-To install migrator you can execute this command:
+To install Migrator you can execute this command:
 ```bash
 composer require rezaamini-ir/migrator
 ```
