@@ -28,9 +28,11 @@ class Read extends Component
         $this->redirect(route('migrator.read'));
     }
 
-    public function fresh()
+    public function fresh($withSeed = false)
     {
-        Artisan::call('migrate:fresh');
+        $args = $withSeed ? ['--seed' => true] : [];
+
+        Artisan::call('migrate:fresh', $args);
 
         $output = Artisan::output();
 
