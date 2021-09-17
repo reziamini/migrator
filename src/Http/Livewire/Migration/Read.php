@@ -19,11 +19,16 @@ class Read extends Component
 
     public function migrate()
     {
-        Artisan::call('migrate');
+        try{
+            Artisan::call('migrate');
+            $output = Artisan::output();
+            $type = 'success';
+        } catch (\Exception $exception){
+            $output = $exception->getMessage();
+            $type = 'error';
+        }
 
-        $output = Artisan::output();
-
-        session()->flash('message', Str::replace("\n", '<br>', $output));
+        $this->storeMessage($output, $type);
 
         $this->redirect(route('migrator.read'));
     }
@@ -32,11 +37,16 @@ class Read extends Component
     {
         $args = $withSeed ? ['--seed' => true] : [];
 
-        Artisan::call('migrate:fresh', $args);
+        try{
+            Artisan::call('migrate:fresh', $args);
+            $output = Artisan::output();
+            $type = 'success';
+        } catch (\Exception $exception){
+            $output = $exception->getMessage();
+            $type = 'error';
+        }
 
-        $output = Artisan::output();
-
-        session()->flash('message', Str::replace("\n", '<br>', $output));
+        $this->storeMessage($output, $type);
 
         $this->redirect(route('migrator.read'));
     }
@@ -47,6 +57,14 @@ class Read extends Component
 
         return view('migrator::livewire.migration.read', ['migrations' => $migrations])
             ->layout('migrator::layout', ['title' => 'Migration List']);
+    }
+
+    private function storeMessage(string $output, string $type)
+    {
+        session()->flash('message', [
+            'message' => Str::replace("\n", '<br>', $output),
+            'type' => $type
+        ]);
     }
 
 }
