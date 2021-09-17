@@ -1,10 +1,6 @@
 <div class="w-full" x-data="{ showFreshModal: false }">
 
-    @if(session()->has('message'))
-        <div class="my-4 border border-green-400 px-4 py-4 mx-4 text-green-700 text-sm font-light rounded bg-green-200 text">
-            {!! session()->get('message') !!}
-        </div>
-    @endif
+    @include('migrator::message')
 
     @livewire('migrator::livewire.migration.create')
 
