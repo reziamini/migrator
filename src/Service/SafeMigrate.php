@@ -75,6 +75,10 @@ class SafeMigrate
 
         $message = "Start safe migrate: \n";
         foreach ($migrations as $migration) {
+            if ($migration == []){
+                continue;
+            }
+
             try {
                 \Artisan::call('migrate', [
                     '--path' => $migration,
