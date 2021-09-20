@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 class SafeMigrate
 {
     protected $table;
+    protected $migrations = [];
 
     public function __construct($error)
     {
@@ -23,26 +24,25 @@ class SafeMigrate
         return $match[1];
     }
 
-    public function getMigrations()
+    public function getMigrationFiles()
     {
         $migrations = File::glob(database_path("migrations/*{$this->table}*"));
 
         return $migrations;
     }
 
-    public function execute()
+    public function getMigrations()
     {
-        $migrations = $this->getMigrations();
+        $migrations = $this->getMigrationFiles();
+        $this->migrations[] = $migrations;
 
         if (is_null($migrations)){
-            return "No dependency founds for `{$this->table}` table";
+            return "No dependency founded for `{$this->table}` table";
         }
 
         \Artisan::call('db:wipe', [
             '--force' => true
         ]);
-
-        $output = "Start safe migration : \n";
 
         foreach ($migrations as $migration) {
             try {
@@ -53,17 +53,44 @@ class SafeMigrate
             } catch (\Exception $exception){
                 if (\Str::contains($exception->getMessage(), 'errno: 150')){
                     $this->table = $this->renderTableName($exception->getMessage());
-                    Log::alert($exception->getMessage());
-                    $this->execute();
+                    $this->getMigrations();
                 } else {
                     return "There was an error: {$exception->getMessage()}";
                 }
             }
         }
 
+        krsort($this->migrations);
+
+        return $this->migrations;
+    }
+
+    public function execute()
+    {
+        $migrations = $this->getMigrations();
+
+        \Artisan::call('db:wipe', [
+            '--force' => true
+        ]);
+
+        $message = "Start safe migrate: \n";
+        foreach ($migrations as $migration) {
+            try {
+                \Artisan::call('migrate', [
+                    '--path' => $migration,
+                    '--realpath' => true,
+                ]);
+                $message .= \Artisan::output();
+            } catch (\Exception $exception){
+                return "There is an error: {$exception->getMessage()}";
+            }
+        }
+
         \Artisan::call('migrate');
 
-        return $output.\Artisan::output();
+        $message .= \Artisan::output();
+
+        return $message;
     }
 
 }
