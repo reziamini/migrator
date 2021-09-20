@@ -6,6 +6,7 @@ use Livewire\Component;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
+use Migrator\Service\SafeMigrate;
 
 class Read extends Component
 {
@@ -17,15 +18,21 @@ class Read extends Component
         // just to update the list
     }
 
-    public function migrate()
+    public function migrate($safe = false)
     {
         try{
             Artisan::call('migrate');
             $output = Artisan::output();
             $type = 'success';
         } catch (\Exception $exception){
-            $output = $exception->getMessage();
-            $type = 'error';
+            if ($safe and Str::contains($exception->getMessage(), 'errno: 150')){
+                $safeMigrator = (new SafeMigrate($exception->getMessage()))->execute();
+                $output = $safeMigrator;
+                $type = 'success';
+            } else {
+                $output = $exception->getMessage();
+                $type = 'error';
+            }
         }
 
         $this->storeMessage($output, $type);
