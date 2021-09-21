@@ -5,6 +5,7 @@ namespace Migrator\Service;
 
 
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Artisan;
 
 class SafeMigrate
 {
@@ -39,9 +40,7 @@ class SafeMigrate
             return "No dependency founded for `{$this->table}` table";
         }
 
-        \Artisan::call('db:wipe', [
-            '--force' => true
-        ]);
+        $this->clearDatabase();
 
         foreach ($migrations as $table => $migration) {
             if ($migration == []){
@@ -49,10 +48,7 @@ class SafeMigrate
             }
 
             try {
-                \Artisan::call('migrate', [
-                    '--path' => $migration,
-                    '--realpath' => true,
-                ]);
+                $this->runMigration($migration);
             } catch (\Exception $exception){
                 if (\Str::contains($exception->getMessage(), 'errno: 150')){
                     $this->table = $this->renderTableName($exception->getMessage());
@@ -63,9 +59,7 @@ class SafeMigrate
             }
         }
 
-        \Artisan::call('db:wipe', [
-            '--force' => true
-        ]);
+        $this->clearDatabase();
 
         krsort($this->migrations);
 
@@ -78,17 +72,13 @@ class SafeMigrate
 
         $message = "Start safe migrate: \n";
         foreach ($migrations as $migration) {
-
-            if ($migration[array_key_first($migration)] == []){
+            $pathArray = $migration[array_key_first($migration)];
+            if ($pathArray == []){
                 return "Dependencies for `".array_key_first($migration)."` table not found!";
             }
 
             try {
-                \Artisan::call('migrate', [
-                    '--path' => $migration[array_key_first($migration)],
-                    '--realpath' => true,
-                ]);
-                $message .= \Artisan::output();
+                $message .= $this->runMigration($pathArray);
             } catch (\Exception $exception){
                 return "There is an error: {$exception->getMessage()}";
             }
@@ -99,6 +89,22 @@ class SafeMigrate
         $message .= \Artisan::output();
 
         return $message;
+    }
+
+    private function runMigration($path){
+        \Artisan::call('migrate', [
+            '--path' => $path,
+            '--realpath' => true,
+        ]);
+
+        return Artisan::output();
+    }
+
+    private function clearDatabase()
+    {
+        \Artisan::call('db:wipe', [
+            '--force' => true
+        ]);
     }
 
 }
