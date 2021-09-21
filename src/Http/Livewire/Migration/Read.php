@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Migrator\Service\SafeMigrate;
+use Illuminate\Support\Facades\Schema;
 
 class Read extends Component
 {
@@ -60,6 +61,10 @@ class Read extends Component
 
     public function render()
     {
+        if (!Schema::hasTable('migrations')){
+            Artisan::call('migrate:install');
+        }
+
         $migrations = File::files(database_path('migrations'));
 
         return view('migrator::livewire.migration.read', ['migrations' => $migrations])
