@@ -5,7 +5,6 @@ namespace Migrator\Service;
 
 
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
 
 class SafeMigrate
 {
