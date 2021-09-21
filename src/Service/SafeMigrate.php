@@ -27,7 +27,7 @@ class SafeMigrate
     {
         $migrations = File::glob(database_path("migrations/*{$this->table}*"));
 
-        return $migrations;
+        return [$this->table => $migrations];
     }
 
     public function getMigrations()
@@ -43,7 +43,11 @@ class SafeMigrate
             '--force' => true
         ]);
 
-        foreach ($migrations as $migration) {
+        foreach ($migrations as $table => $migration) {
+            if ($migration == []){
+                continue;
+            }
+
             try {
                 \Artisan::call('migrate', [
                     '--path' => $migration,
@@ -59,6 +63,10 @@ class SafeMigrate
             }
         }
 
+        \Artisan::call('db:wipe', [
+            '--force' => true
+        ]);
+
         krsort($this->migrations);
 
         return $this->migrations;
@@ -68,19 +76,16 @@ class SafeMigrate
     {
         $migrations = $this->getMigrations();
 
-        \Artisan::call('db:wipe', [
-            '--force' => true
-        ]);
-
         $message = "Start safe migrate: \n";
         foreach ($migrations as $migration) {
-            if ($migration == []){
-                continue;
+
+            if ($migration[array_key_first($migration)] == []){
+                return "Dependencies for `".array_key_first($migration)."` table not found!";
             }
 
             try {
                 \Artisan::call('migrate', [
-                    '--path' => $migration,
+                    '--path' => $migration[array_key_first($migration)],
                     '--realpath' => true,
                 ]);
                 $message .= \Artisan::output();
