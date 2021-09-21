@@ -28,8 +28,8 @@ class Read extends Component
         } catch (\Exception $exception){
             if ($safe and Str::contains($exception->getMessage(), 'errno: 150')){
                 $safeMigrator = (new SafeMigrate($exception->getMessage()))->execute();
-                $output = $safeMigrator;
-                $type = 'success';
+                $output = $safeMigrator['message'];
+                $type = $safeMigrator['type'];
             } else {
                 $output = $exception->getMessage();
                 $type = 'error';

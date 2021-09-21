@@ -74,13 +74,19 @@ class SafeMigrate
         foreach ($migrations as $migration) {
             $pathArray = $migration[array_key_first($migration)];
             if ($pathArray == []){
-                return "Dependencies for `".array_key_first($migration)."` table not found!";
+                return [
+                    'message' => "Dependencies for `".array_key_first($migration)."` table not found!",
+                    'type' => 'error'
+                ];
             }
 
             try {
                 $message .= $this->runMigration($pathArray);
             } catch (\Exception $exception){
-                return "There is an error: {$exception->getMessage()}";
+                return [
+                    'message' => "There is an error: {$exception->getMessage()}",
+                    'type' => 'error'
+                ];
             }
         }
 
@@ -88,7 +94,10 @@ class SafeMigrate
 
         $message .= \Artisan::output();
 
-        return $message;
+        return [
+            'message' => $message,
+            'type' => 'success'
+        ];
     }
 
     private function runMigration($path){
