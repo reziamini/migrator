@@ -75,10 +75,10 @@
                 </div>
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 flex justify-between sm:flex-row-reverse">
                     <div>
-                        <button wire:click="fresh" x-on:click.prevent="showFreshModal = false" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm mt-3 sm:mt-0">
+                        <button wire:click="fresh" x-on:click.prevent="showFreshModal = false" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 sm:ml-3 sm:w-auto sm:text-sm mt-3 sm:mt-0">
                             Fresh database
                         </button>
-                        <button wire:click="fresh(true)" x-on:click.prevent="showFreshModal = false" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm mt-3 sm:mt-0">
+                        <button wire:click="fresh(true)" x-on:click.prevent="showFreshModal = false" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 sm:ml-3 sm:w-auto sm:text-sm mt-3 sm:mt-0">
                             Fresh and seed
                         </button>
                     </div>
@@ -114,16 +114,19 @@
                                 <p class="text-sm text-gray-500">
                                     Are Tou sure to migrate the migrations?
                                 </p>
+                                <div class="mt-2">
+                                    <span class="text-xs text-red-600 mt-4">Note: Safe migrate will fresh the database then re-run migrations!</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 flex justify-between sm:flex-row-reverse">
                     <div>
-                        <button wire:click="migrate" x-on:click.prevent="showMigrateModal = false" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 hover:bg-blue-700 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm mt-3 sm:mt-0">
+                        <button wire:click="migrate" x-on:click.prevent="showMigrateModal = false" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 hover:bg-blue-700 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 sm:ml-3 sm:w-auto sm:text-sm mt-3 sm:mt-0">
                             Normal Migrate
                         </button>
-                        <button wire:click="migrate(true)" x-on:click.prevent="showMigrateModal = false" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 hover:bg-blue-700 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm mt-3 sm:mt-0">
+                        <button wire:click="migrate(true)" x-on:click.prevent="showMigrateModal = false" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 hover:bg-blue-700 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 sm:ml-3 sm:w-auto sm:text-sm mt-3 sm:mt-0">
                             Safe Re-Migrate all
                         </button>
                     </div>
