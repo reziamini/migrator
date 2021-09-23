@@ -61,7 +61,9 @@ class MigratorParser
 
             return substr($match, stripos($match, "'") + 1, (strripos($match, "'") - stripos($match, "'")) - 1);
 
-        } elseif(preg_match($patternTwo, $contents, $matches)){
+        } 
+
+        if(preg_match($patternTwo, $contents, $matches)){
 
             $match = trim(implode("\n", $matches));
 
@@ -69,8 +71,8 @@ class MigratorParser
 
             return substr($fullConnection, stripos($fullConnection, "'") + 1, (strripos($fullConnection, "'") - stripos($fullConnection, "'")) - 1);
 
-        } else {
-            return env('DB_CONNECTION');
-        }
+        } 
+
+        return config('database.default');
     }
 }
