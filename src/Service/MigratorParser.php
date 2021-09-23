@@ -58,6 +58,7 @@ class MigratorParser
         if (preg_match($patternOne, $contents, $matches)){
 
             $match = trim(implode("\n", $matches));
+            $match = str_replace('"', "'", $match);
 
             return substr($match, stripos($match, "'") + 1, (strripos($match, "'") - stripos($match, "'")) - 1);
 
@@ -66,6 +67,7 @@ class MigratorParser
         if(preg_match($patternTwo, $contents, $matches)){
 
             $match = trim(implode("\n", $matches));
+            $match = str_replace('"', "'", $match);
 
             $fullConnection = substr($match, strpos($match, 'Schema::connection'), strpos($match, '->create') - strpos($match, 'Schema::connection'));
 
