@@ -38,4 +38,41 @@ class MigratorParser
         return Carbon::createFromFormat('Y m d His ', $date)->ago();
     }
 
+    public function getConnectionName()
+    {
+        $file = database_path('migrations\\'.$this->name);
+
+        $contents = file_get_contents($file);
+
+        $searchForOne = '$connection';
+        $searchForTwo = 'Schema::connection';
+
+        $patternOne = preg_quote($searchForOne, '/');
+        $patternOne = "/^.*$patternOne.*\$/m";
+
+        $patternTwo = preg_quote($searchForTwo, '/');
+        $patternTwo = "/^.*$patternTwo.*\$/m";
+
+        $match = '';
+
+        if (preg_match($patternOne, $contents, $matches)){
+
+            $match = trim(implode("\n", $matches));
+
+            return substr($match, stripos($match, "'") + 1, (strripos($match, "'") - stripos($match, "'")) - 1);
+
+        } 
+
+        if(preg_match($patternTwo, $contents, $matches)){
+
+            $match = trim(implode("\n", $matches));
+
+            $fullConnection = substr($match, strpos($match, 'Schema::connection'), strpos($match, '->create') - strpos($match, 'Schema::connection'));
+
+            return substr($fullConnection, stripos($fullConnection, "'") + 1, (strripos($fullConnection, "'") - stripos($fullConnection, "'")) - 1);
+
+        } 
+
+        return config('database.default');
+    }
 }

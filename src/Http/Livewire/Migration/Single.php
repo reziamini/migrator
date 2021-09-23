@@ -12,6 +12,7 @@ class Single extends Component
 
     public $migrationFile;
     public $migrationName;
+    public $migrationConnectionName;
     public $migrationCreatedAt;
     public $status;
 
@@ -20,6 +21,7 @@ class Single extends Component
         $this->migrationFile = $migration->getFilename();
         $object = new MigratorParser($this->migrationFile);
         $this->migrationName = $object->getName();
+        $this->migrationConnectionName = $object->getConnectionName();
         $this->migrationCreatedAt = $object->getDate();
         $this->status = DB::table('migrations')->where('migration', str_replace('.php', '', $this->migrationFile))->exists() ? 'Yes' : 'No';
     }
