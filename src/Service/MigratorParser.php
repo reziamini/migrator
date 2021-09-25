@@ -68,6 +68,6 @@ class MigratorParser
             return $m[1];
         }
 
-        return config('database.default');
+        return \Config::get('database.default');
     }
 }
