@@ -6,6 +6,7 @@ namespace Migrator\Service;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\App;
 
 class MigratorParser
 {
@@ -53,27 +54,19 @@ class MigratorParser
         $patternTwo = preg_quote($searchForTwo, '/');
         $patternTwo = "/^.*$patternTwo.*\$/m";
 
-        $match = '';
-
         if (preg_match($patternOne, $contents, $matches)){
-
             $match = trim(implode("\n", $matches));
             $match = str_replace('"', "'", $match);
 
             return substr($match, stripos($match, "'") + 1, (strripos($match, "'") - stripos($match, "'")) - 1);
-
-        } 
+        }
 
         if(preg_match($patternTwo, $contents, $matches)){
-
             $match = trim(implode("\n", $matches));
-            $match = str_replace('"', "'", $match);
+            preg_match('/Schema::connection\(["|\'](.*)["|\']\)/', $match, $m);
 
-            $fullConnection = substr($match, strpos($match, 'Schema::connection'), strpos($match, '->create') - strpos($match, 'Schema::connection'));
-
-            return substr($fullConnection, stripos($fullConnection, "'") + 1, (strripos($fullConnection, "'") - stripos($fullConnection, "'")) - 1);
-
-        } 
+            return $m[1];
+        }
 
         return config('database.default');
     }
