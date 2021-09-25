@@ -36,7 +36,7 @@ class MigratorParserTest extends TestCase
     /** @test * */
     public function migration_connection_will_be_parsed(){
         $app = new Application;
-        $app->useDatabasePath(__DIR__.'/Dependencies/database');
+        $app->useDatabasePath(__DIR__.'/../Dependencies/database');
 
         $parser = new MigratorParser('users_with_connection1.php');
         $this->assertEquals($parser->getConnectionName(), 'pgsql');
