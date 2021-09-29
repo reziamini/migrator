@@ -4,6 +4,7 @@ namespace Migrator\Http\Livewire\Migration;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Validation\Rule;
 
 class Create extends Component
 {
@@ -11,13 +12,6 @@ class Create extends Component
     public $table;
     public $connection;
     public $type = 'create';
-
-    protected $rules = [
-        'name' => 'required|min:2',
-        'table' => 'required|min:2',
-        'connection' => 'nullable|min:2',
-        'type' => 'required|in:create,edit'
-    ];
 
     public function mount()
     {
@@ -78,4 +72,15 @@ class Create extends Component
 
         file_put_contents($file, $finalContent);
     }
+
+    protected function getRules()
+    {
+        return [
+            'name' => 'required|min:2',
+            'table' => 'required|min:2',
+            'connection' => ['required', Rule::in(array_keys(config('database.connections')))],
+            'type' => 'required|in:create,edit'
+        ];
+    }
+
 }
