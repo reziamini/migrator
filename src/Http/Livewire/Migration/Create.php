@@ -9,11 +9,13 @@ class Create extends Component
 {
     public $name;
     public $table;
+    public $connection;
     public $type = 'create';
 
     protected $rules = [
         'name' => 'required|min:2',
         'table' => 'required|min:2',
+        'connection' => 'nullable|min:2',
         'type' => 'required|in:create,edit'
     ];
 
@@ -33,6 +35,10 @@ class Create extends Component
 
         Artisan::call('make:migration', $array);
 
+        if ($this->connection) {
+            $this->addConnection();
+        }
+
         $this->dispatchBrowserEvent('show-message', [
             'type' => 'success',
             'message' => 'Migration was created.'
@@ -47,4 +53,20 @@ class Create extends Component
         return view('migrator::livewire.migration.create');
     }
 
+    private function addConnection()
+    {
+        $output = Artisan::output();
+
+        $fileName = trim(substr($output, stripos($output, ":") + 1)) . '.php';
+
+        $file = database_path('migrations\\'.$fileName);
+
+        $fileContent = file_get_contents($file);
+
+        $position = stripos($fileContent, "extends Migration") + 20;
+
+        $finalContent = substr($fileContent, 0, $position) . "\n" . '    protected $connection = ' . "'" . $this->connection . "';\n" . substr($fileContent, $position);
+        
+        file_put_contents($file, $finalContent);
+    }
 }
