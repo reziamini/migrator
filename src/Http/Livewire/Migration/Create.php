@@ -65,7 +65,9 @@ class Create extends Component
 
         $position = stripos($fileContent, "extends Migration") + 20;
 
-        $finalContent = substr($fileContent, 0, $position) . "\n" . '    protected $connection = ' . "'" . $this->connection . "';\n" . substr($fileContent, $position);
+        $comment = "    /**\n     * The database connection that should be used by the migration.\n     *\n     * @var string\n     */\n";
+
+        $finalContent = substr($fileContent, 0, $position) . "\n" . $comment . '    protected $connection = ' . "'" . $this->connection . "';\n\n" . substr($fileContent, $position);
         
         file_put_contents($file, $finalContent);
     }
