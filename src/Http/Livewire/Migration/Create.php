@@ -19,6 +19,11 @@ class Create extends Component
         'type' => 'required|in:create,edit'
     ];
 
+    public function mount()
+    {
+        $this->connection = config('database.default');
+    }
+
     public function create()
     {
         $this->validate();
@@ -35,7 +40,7 @@ class Create extends Component
 
         Artisan::call('make:migration', $array);
 
-        if ($this->connection) {
+        if ($this->connection and $this->connection != config('database.default')) {
             $this->addConnection();
         }
 
@@ -44,13 +49,15 @@ class Create extends Component
             'message' => 'Migration was created.'
         ]);
 
-        $this->reset();
+        $this->reset('name', 'table');
         $this->emit('migrationUpdated');
     }
 
     public function render()
     {
-        return view('migrator::livewire.migration.create');
+        $connections = array_keys(config('database.connections'));
+
+        return view('migrator::livewire.migration.create', compact('connections'));
     }
 
     private function addConnection()
@@ -68,7 +75,7 @@ class Create extends Component
         $comment = "    /**\n     * The database connection that should be used by the migration.\n     *\n     * @var string\n     */\n";
 
         $finalContent = substr($fileContent, 0, $position) . "\n" . $comment . '    protected $connection = ' . "'" . $this->connection . "';\n\n" . substr($fileContent, $position);
-        
+
         file_put_contents($file, $finalContent);
     }
 }
