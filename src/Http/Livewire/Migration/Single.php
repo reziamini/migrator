@@ -6,6 +6,7 @@ use Livewire\Component;
 use Migrator\Service\MigratorParser;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class Single extends Component
 {
@@ -30,13 +31,21 @@ class Single extends Component
     {
         $path = 'database/migrations/'.$this->migrationFile;
 
-        \Artisan::call('migrate', [
-            '--path' => $path
-        ]);
+        try {
+            \Artisan::call('migrate', [
+                '--path' => $path
+            ]);
+            
+            $message = 'Migration was migrated.';
+            $type = 'success';
+        } catch(\Exception $exception) {
+            $message = $exception->getMessage();
+            $type = 'error';
+        }
 
         $this->dispatchBrowserEvent('show-message', [
-            'type' => 'success',
-            'message' => 'Migration was migrated.'
+            'type' => $type,
+            'message' => Str::replace("\n", '<br>', $message)
         ]);
 
         $this->emit('migrationUpdated');
