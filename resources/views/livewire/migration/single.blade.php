@@ -30,6 +30,8 @@
             <a class="text-indigo-600 hover:text-indigo-800 cursor-pointer" wire:click.prevent="migrate">Migrate</a>
         @endif
         <a @click="DeleteModal = true" class="text-red-600 hover:text-red-800 cursor-pointer">Delete</a>
+
+        <a class="text-green-600 hover:text-green-800 cursor-pointer" wire:click.prevent="rollback" style="@if(!DB::table('migrations')->where('migration', str_replace('.php', '', $migrationFile))->exists()) pointer-events: none; cursor: default; @endif">Rollback</a>
     </td>
 
     <td style="display: none" x-show="DeleteModal" x-transition.scale>

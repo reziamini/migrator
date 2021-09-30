@@ -95,6 +95,36 @@ class Single extends Component
         $this->emit('migrationUpdated');
     }
 
+    public function rollback()
+    {
+        $migrationName = substr($this->migrationFile, 0, strrpos($this->migrationFile, '.php'));
+        
+        \DB::table('migrations')
+            ->where('migration', $migrationName)
+            ->update(['batch' => \DB::table('migrations')->max('batch')]);
+
+        $path = 'database/migrations/'.$this->migrationFile;
+
+        try {
+            \Artisan::call('migrate:rollback', [
+                '--path' => $path,
+            ]);
+            
+            $message = 'Migration was rolled back.';
+            $type = 'success';
+        } catch(\Exception $exception) {
+            $message = $exception->getMessage();
+            $type = 'error';
+        }
+
+        $this->dispatchBrowserEvent('show-message', [
+            'type' => $type,
+            'message' => Str::replace("\n", '<br>', $message)
+        ]);
+
+        $this->emit('migrationUpdated');
+    }
+
     public function render()
     {
         return view('migrator::livewire.migration.single');
