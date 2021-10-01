@@ -1,4 +1,8 @@
 <tr x-data="{ DeleteModal: false, RollbackModal: false }">
+    @php
+        $exists = DB::table('migrations')->where('migration', str_replace('.php', '', $migrationFile))->exists();
+        $maxBatch = DB::table('migrations')->max('batch');
+    @endphp
     <td class="px-6 py-4 whitespace-nowrap">
         <div class="text-sm text-gray-900">{{ $migrationName }}</div>
     </td>
@@ -8,7 +12,7 @@
     </td>
 
    <td class="px-6 py-4 whitespace-nowrap">
-        @if(DB::table('migrations')->where('migration', str_replace('.php', '', $migrationFile))->exists())
+        @if($exists)
             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
               Yes
             </span>
@@ -24,14 +28,14 @@
     </td>
 
     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex justify-between">
-        @if(DB::table('migrations')->where('migration', str_replace('.php', '', $migrationFile))->exists())
+        @if($exists)
             <a class="text-indigo-600 hover:text-indigo-800 cursor-pointer" wire:click.prevent="refresh">Refresh</a>
         @else
             <a class="text-indigo-600 hover:text-indigo-800 cursor-pointer" wire:click.prevent="migrate">Migrate</a>
         @endif
         <a @click="DeleteModal = true" class="text-red-600 hover:text-red-800 cursor-pointer">Delete</a>
 
-        <a class="text-green-600 hover:text-green-800 cursor-pointer" @click="RollbackModal = true" style="@if(!DB::table('migrations')->where('migration', str_replace('.php', '', $migrationFile))->exists()) pointer-events: none; cursor: default; @endif">Rollback</a>
+        <a class="text-green-600 hover:text-green-800 cursor-pointer" @click="RollbackModal = true" style="@if(!$exists) pointer-events: none; cursor: default; @endif">Rollback</a>
     </td>
 
     <td style="display: none" x-show="DeleteModal" x-transition.scale>
@@ -104,7 +108,7 @@
                                     <p class="text-sm text-gray-500">
                                         Are Tou sure to rollback '{{ $migrationName }}' migration
                                     </p>
-                                    @if($batch != \DB::table('migrations')->max('batch'))
+                                    @if($batch != $maxBatch)
                                         <div class="mt-2">
                                             <span class="text-xs text-red-600 mt-4">Note: Force rollback will change the batch of migration then rollback migration</span>
                                         </div>
@@ -115,7 +119,7 @@
                     </div>
                     <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
 
-                       @if($batch === \DB::table('migrations')->max('batch'))
+                       @if($batch === $maxBatch)
                             <button wire:click="rollback" @click.prevent="RollbackModal = false" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
                                 Rollback
                             </button>
