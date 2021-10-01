@@ -15,17 +15,15 @@ class Single extends Component
     public $migrationName;
     public $migrationConnectionName;
     public $migrationCreatedAt;
-    public $status;
     public $batch;
 
     public function mount($migration)
     {
         $this->migrationFile = $migration->getFilename();
-        $object = new MigratorParser($this->migrationFile);
-        $this->migrationName = $object->getName();
-        $this->migrationConnectionName = $object->getConnectionName();
-        $this->migrationCreatedAt = $object->getDate();
-        $this->status = DB::table('migrations')->where('migration', str_replace('.php', '', $this->migrationFile))->exists() ? 'Yes' : 'No';
+        $migratorParser = new MigratorParser($this->migrationFile);
+        $this->migrationName = $migratorParser->getName();
+        $this->migrationConnectionName = $migratorParser->getConnectionName();
+        $this->migrationCreatedAt = $migratorParser->getDate();
         $this->batch = DB::table('migrations')
             ->where('migration', str_replace('.php', '', $this->migrationFile))
             ->first(['batch'])->batch ?? 0;
@@ -39,7 +37,7 @@ class Single extends Component
             \Artisan::call('migrate', [
                 '--path' => $path
             ]);
-            
+
             $message = 'Migration was migrated.';
             $type = 'success';
         } catch(\Exception $exception) {
@@ -111,7 +109,7 @@ class Single extends Component
             \Artisan::call('migrate:rollback', [
                 '--path' => $path,
             ]);
-            
+
             $message = 'Migration was rolled back.';
             $type = 'success';
         } catch(\Exception $exception) {
