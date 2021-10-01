@@ -16,6 +16,7 @@ class Single extends Component
     public $migrationConnectionName;
     public $migrationCreatedAt;
     public $status;
+    public $batch;
 
     public function mount($migration)
     {
@@ -25,6 +26,9 @@ class Single extends Component
         $this->migrationConnectionName = $object->getConnectionName();
         $this->migrationCreatedAt = $object->getDate();
         $this->status = DB::table('migrations')->where('migration', str_replace('.php', '', $this->migrationFile))->exists() ? 'Yes' : 'No';
+        $this->batch = DB::table('migrations')
+            ->where('migration', str_replace('.php', '', $this->migrationFile))
+            ->first(['batch'])->batch ?? 0;
     }
 
     public function migrate()
@@ -91,6 +95,34 @@ class Single extends Component
         $path = database_path('migrations/'.$this->migrationFile);
 
         File::delete($path);
+
+        $this->emit('migrationUpdated');
+    }
+
+    public function rollback()
+    {
+        \DB::table('migrations')
+            ->where('migration', str_replace('.php', '', $this->migrationFile))
+            ->update(['batch' => \DB::table('migrations')->max('batch')]);
+
+        $path = 'database/migrations/'.$this->migrationFile;
+
+        try {
+            \Artisan::call('migrate:rollback', [
+                '--path' => $path,
+            ]);
+            
+            $message = 'Migration was rolled back.';
+            $type = 'success';
+        } catch(\Exception $exception) {
+            $message = $exception->getMessage();
+            $type = 'error';
+        }
+
+        $this->dispatchBrowserEvent('show-message', [
+            'type' => $type,
+            'message' => Str::replace("\n", '<br>', $message)
+        ]);
 
         $this->emit('migrationUpdated');
     }
