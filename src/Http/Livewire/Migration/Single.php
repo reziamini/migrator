@@ -16,6 +16,7 @@ class Single extends Component
     public $migrationConnectionName;
     public $migrationCreatedAt;
     public $status;
+    public $batch;
 
     public function mount($migration)
     {
@@ -25,6 +26,9 @@ class Single extends Component
         $this->migrationConnectionName = $object->getConnectionName();
         $this->migrationCreatedAt = $object->getDate();
         $this->status = DB::table('migrations')->where('migration', str_replace('.php', '', $this->migrationFile))->exists() ? 'Yes' : 'No';
+        $this->batch = DB::table('migrations')
+            ->where('migration', str_replace('.php', '', $this->migrationFile))
+            ->first(['batch'])->batch ?? 0;
     }
 
     public function migrate()
@@ -97,10 +101,8 @@ class Single extends Component
 
     public function rollback()
     {
-        $migrationName = substr($this->migrationFile, 0, strrpos($this->migrationFile, '.php'));
-        
         \DB::table('migrations')
-            ->where('migration', $migrationName)
+            ->where('migration', str_replace('.php', '', $this->migrationFile))
             ->update(['batch' => \DB::table('migrations')->max('batch')]);
 
         $path = 'database/migrations/'.$this->migrationFile;
