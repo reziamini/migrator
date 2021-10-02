@@ -1,7 +1,7 @@
 <tr x-data="{ DeleteModal: false, RollbackModal: false }">
     @php
-        $exists = DB::table('migrations')->where('migration', str_replace('.php', '', $migrationFile))->exists();
-        $maxBatch = DB::table('migrations')->max('batch');
+        $exists = DB::table(config('database.migrations'))->where('migration', str_replace('.php', '', $migrationFile))->exists();
+        $maxBatch = DB::table(config('database.migrations'))->max('batch');
     @endphp
     <td class="px-6 py-4 whitespace-nowrap">
         <div class="text-sm text-gray-900">{{ $migrationName }}</div>

@@ -24,7 +24,7 @@ class Single extends Component
         $this->migrationName = $migratorParser->getName();
         $this->migrationConnectionName = $migratorParser->getConnectionName();
         $this->migrationCreatedAt = $migratorParser->getDate();
-        $this->batch = DB::table('migrations')
+        $this->batch = DB::table(config('database.migrations'))
             ->where('migration', str_replace('.php', '', $this->migrationFile))
             ->first(['batch'])->batch ?? 0;
     }
@@ -99,9 +99,10 @@ class Single extends Component
 
     public function rollback()
     {
-        \DB::table('migrations')
+        $migrationTable = config('database.migrations');
+        \DB::table($migrationTable)
             ->where('migration', str_replace('.php', '', $this->migrationFile))
-            ->update(['batch' => \DB::table('migrations')->max('batch')]);
+            ->update(['batch' => \DB::table($migrationTable)->max('batch')]);
 
         $path = 'database/migrations/'.$this->migrationFile;
 
