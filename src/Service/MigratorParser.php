@@ -6,7 +6,6 @@ namespace Migrator\Service;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\App;
 
 class MigratorParser
 {
