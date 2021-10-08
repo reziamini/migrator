@@ -69,4 +69,23 @@ class MigratorParser
 
         return \Config::get('database.default');
     }
+
+    public function getStructure()
+    {
+        $file = database_path('migrations\\'.$this->name);
+
+        $contents = file_get_contents($file);
+
+        $searchForOne = '$table->';
+
+        $patternOne = preg_quote($searchForOne, '/');
+        
+        $patternOne = "/^.*$patternOne.*\$/m";
+        
+        preg_match_all($patternOne, $contents, $matches);
+        
+        $structure = new StructureParser($matches);
+        
+        return $structure->getStructure();
+    }
 }

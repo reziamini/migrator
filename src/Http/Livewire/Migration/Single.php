@@ -16,6 +16,7 @@ class Single extends Component
     public $migrationConnectionName;
     public $migrationCreatedAt;
     public $batch;
+    public $structure;
 
     public function mount($migration)
     {
@@ -27,6 +28,7 @@ class Single extends Component
         $this->batch = DB::table(config('database.migrations'))
             ->where('migration', str_replace('.php', '', $this->migrationFile))
             ->first(['batch'])->batch ?? 0;
+        $this->structure = $migratorParser->getStructure(); 
     }
 
     public function migrate()
