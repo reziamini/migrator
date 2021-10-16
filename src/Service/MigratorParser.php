@@ -40,7 +40,7 @@ class MigratorParser
 
     public function getConnectionName()
     {
-        $file = database_path('migrations\\'.$this->name);
+        $file = database_path('migrations'.DIRECTORY_SEPARATOR.$this->name);
 
         $contents = file_get_contents($file);
 
@@ -72,7 +72,7 @@ class MigratorParser
 
     public function getStructure()
     {
-        $file = database_path('migrations\\'.$this->name);
+        $file = database_path('migrations'.DIRECTORY_SEPARATOR.$this->name);
 
         $contents = file_get_contents($file);
 

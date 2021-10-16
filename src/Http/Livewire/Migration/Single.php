@@ -28,16 +28,14 @@ class Single extends Component
         $this->batch = DB::table(config('database.migrations'))
             ->where('migration', str_replace('.php', '', $this->migrationFile))
             ->first(['batch'])->batch ?? 0;
-        $this->structure = $migratorParser->getStructure(); 
+        $this->structure = $migratorParser->getStructure();
     }
 
     public function migrate()
     {
-        $path = 'database/migrations/'.$this->migrationFile;
-
         try {
             \Artisan::call('migrate', [
-                '--path' => $path
+                '--path' => $this->getPath()
             ]);
 
             $message = 'Migration was migrated.';
@@ -57,10 +55,8 @@ class Single extends Component
 
     public function refresh()
     {
-        $path = 'database/migrations/'.$this->migrationFile;
-
         \Artisan::call('migrate:refresh', [
-            '--path' => $path
+            '--path' => $this->getPath()
         ]);
 
         $this->dispatchBrowserEvent('show-message', [
@@ -73,10 +69,8 @@ class Single extends Component
 
     public function removeTable()
     {
-        $path = 'database/migrations/'.$this->migrationFile;
-
         \Artisan::call('migrate:reset', [
-            '--path' => $path,
+            '--path' => $this->getPath(),
             '--force' => true,
         ]);
 
@@ -92,7 +86,7 @@ class Single extends Component
     {
         $this->removeTable();
 
-        $path = database_path('migrations/'.$this->migrationFile);
+        $path = database_path('migrations'.DIRECTORY_SEPARATOR.$this->migrationFile);
 
         File::delete($path);
 
@@ -106,7 +100,7 @@ class Single extends Component
             ->where('migration', str_replace('.php', '', $this->migrationFile))
             ->update(['batch' => \DB::table($migrationTable)->max('batch')]);
 
-        $path = 'database/migrations/'.$this->migrationFile;
+        $path = 'database'.DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.$this->migrationFile;
 
         try {
             \Artisan::call('migrate:rollback', [
@@ -131,6 +125,11 @@ class Single extends Component
     public function render()
     {
         return view('migrator::livewire.migration.single');
+    }
+
+    private function getPath()
+    {
+        return 'database'.DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.$this->migrationFile;
     }
 
 }

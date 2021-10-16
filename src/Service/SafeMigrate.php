@@ -26,7 +26,7 @@ class SafeMigrate
 
     public function getMigrationFiles()
     {
-        $migrations = File::glob(database_path("migrations/*{$this->table}*"));
+        $migrations = File::glob(database_path("migrations".DIRECTORY_SEPARATOR."*{$this->table}*"));
 
         return [$this->table => $migrations];
     }
