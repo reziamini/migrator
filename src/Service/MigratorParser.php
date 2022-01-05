@@ -64,7 +64,7 @@ class MigratorParser
             $match = trim(implode("\n", $matches));
             preg_match('/Schema::connection\(["|\'](.*)["|\']\)/', $match, $m);
 
-            return $m[1];
+            return $m[1] ?? '';
         }
 
         return \Config::get('database.default');
