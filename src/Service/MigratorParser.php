@@ -62,7 +62,7 @@ class MigratorParser
 
         if(preg_match($patternTwo, $contents, $matches)){
             $match = trim(implode("\n", $matches));
-            preg_match('/Schema::connection\(["|\'](.*)["|\']\)/', $match, $m);
+            preg_match('/Schema::connection\(["|\'](.*?)["|\']\)/', $match, $m);
 
             return $m[1] ?? '';
         }
