@@ -63,7 +63,7 @@
                                 </h3>
                                 <div class="mt-2">
                                     <p class="text-sm text-gray-500">
-                                        Are Tou sure to delete '{{ $migrationName }}' migration
+                                        Are You sure to delete '{{ $migrationName }}' migration
                                     </p>
                                 </div>
                             </div>
@@ -108,7 +108,7 @@
                                 </h3>
                                 <div class="mt-2">
                                     <p class="text-sm text-gray-500">
-                                        Are Tou sure to rollback '{{ $migrationName }}' migration
+                                        Are You sure to rollback '{{ $migrationName }}' migration
                                     </p>
                                     @if($batch != $maxBatch)
                                         <div class="mt-2">
