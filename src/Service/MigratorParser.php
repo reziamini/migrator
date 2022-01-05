@@ -84,8 +84,13 @@ class MigratorParser
 
         preg_match_all($patternOne, $contents, $matches);
 
-        $structure = new StructureParser($matches);
+        try {
+            $structure = new StructureParser($matches);
 
-        return $structure->getStructure();
+            return $structure->getStructure();
+        } catch (\Exception $exception){
+            return [];
+        }
+
     }
 }
