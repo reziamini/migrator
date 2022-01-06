@@ -15,10 +15,10 @@ class MigratorServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/migrator.php', 'migrator');
     }
 
-    public function boot()
+    public function boot(): void
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'migrator');
-        $this->loadRoutesFrom(__DIR__.'/routes/migrator.php');
+        $this->loadRoutesFrom(__DIR__ . '/../routes/migrator.php');
 
         $this->publishes([
             __DIR__ . '/../config' => config_path()
@@ -27,7 +27,7 @@ class MigratorServiceProvider extends ServiceProvider
         $this->registerLivewireComponents();
     }
 
-    private function registerLivewireComponents()
+    private function registerLivewireComponents(): void
     {
         Livewire::component('migrator::livewire.migration.create', Create::class);
         Livewire::component('migrator::livewire.migration.read', Read::class);
