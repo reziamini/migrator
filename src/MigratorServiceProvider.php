@@ -12,7 +12,7 @@ class MigratorServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__.'/config/migrator.php', 'migrator');
+        $this->mergeConfigFrom(__DIR__.'/../config/migrator.php', 'migrator');
     }
 
     public function boot()
@@ -21,7 +21,7 @@ class MigratorServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/routes/migrator.php');
 
         $this->publishes([
-            __DIR__.'/config' => config_path()
+            __DIR__ . '/../config' => config_path()
         ], 'migrator-config');
 
         $this->registerLivewireComponents();
