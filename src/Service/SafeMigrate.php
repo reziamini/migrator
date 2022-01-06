@@ -17,7 +17,7 @@ class SafeMigrate
         $this->table = $this->renderTableName($error);
     }
 
-    public function renderTableName($error)
+    public function renderTableName($error): string
     {
         preg_match("/.*references `(\w+)`.*/", $error, $match);
 
@@ -66,7 +66,7 @@ class SafeMigrate
         return $this->migrations;
     }
 
-    public function execute()
+    public function execute(): array
     {
         $migrations = $this->getMigrations();
 
@@ -100,20 +100,20 @@ class SafeMigrate
         ];
     }
 
-    private function runMigration($path){
+    private function runMigration(string $path): string
+    {
         \Artisan::call('migrate', [
-            '--path' => $path,
+            '--path'     => $path,
             '--realpath' => true,
         ]);
 
         return Artisan::output();
     }
 
-    private function clearDatabase()
+    private function clearDatabase(): void
     {
         \Artisan::call('db:wipe', [
             '--force' => true
         ]);
     }
-
 }

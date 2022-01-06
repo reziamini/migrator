@@ -16,7 +16,7 @@ class MigratorParser
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): string
     {
         $name = $this->name;
 
@@ -27,7 +27,7 @@ class MigratorParser
         return $name;
     }
 
-    public function getDate()
+    public function getDate(): string
     {
         $date = $this->name;
 
@@ -38,7 +38,7 @@ class MigratorParser
         return Carbon::createFromFormat('Y m d His ', $date)->ago();
     }
 
-    public function getConnectionName()
+    public function getConnectionName(): string
     {
         $file = database_path('migrations'.DIRECTORY_SEPARATOR.$this->name);
 
@@ -70,7 +70,7 @@ class MigratorParser
         return \Config::get('database.default');
     }
 
-    public function getStructure()
+    public function getStructure(): array
     {
         $file = database_path('migrations'.DIRECTORY_SEPARATOR.$this->name);
 

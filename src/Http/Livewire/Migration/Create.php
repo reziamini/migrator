@@ -2,6 +2,7 @@
 
 namespace Migrator\Http\Livewire\Migration;
 
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Validation\Rule;
@@ -13,12 +14,12 @@ class Create extends Component
     public $connection;
     public $type = 'create';
 
-    public function mount()
+    public function mount(): void
     {
         $this->connection = config('database.default');
     }
 
-    public function create()
+    public function create(): void
     {
         $this->validate();
 
@@ -47,14 +48,14 @@ class Create extends Component
         $this->emit('migrationUpdated');
     }
 
-    public function render()
+    public function render(): View
     {
         $connections = array_keys(config('database.connections'));
 
         return view('migrator::livewire.migration.create', compact('connections'));
     }
 
-    private function addConnection()
+    private function addConnection(): void
     {
         $output = Artisan::output();
 

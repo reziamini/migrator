@@ -2,6 +2,7 @@
 
 namespace Migrator\Http\Livewire\Migration;
 
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Artisan;
@@ -19,7 +20,7 @@ class Read extends Component
         // just to update the list
     }
 
-    public function migrate($safe = false)
+    public function migrate($safe = false): void
     {
         try{
             Artisan::call('migrate');
@@ -41,7 +42,7 @@ class Read extends Component
         $this->redirect(route('migrator.read'));
     }
 
-    public function fresh($withSeed = false)
+    public function fresh($withSeed = false): void
     {
         $args = $withSeed ? ['--seed' => true] : [];
 
@@ -59,7 +60,7 @@ class Read extends Component
         $this->redirect(route('migrator.read'));
     }
 
-    public function render()
+    public function render(): View
     {
         if (!Schema::hasTable(config('database.migrations'))){
             Artisan::call('migrate:install');
@@ -71,7 +72,7 @@ class Read extends Component
             ->layout('migrator::layout', ['title' => 'Migration List']);
     }
 
-    private function storeMessage(string $output, string $type)
+    private function storeMessage(string $output, string $type): void
     {
         session()->flash('message', [
             'message' => Str::replace("\n", '<br>', $output),

@@ -12,8 +12,8 @@ Class StructureParser {
         $this->matches = $matches;
     }
 
-	public function getStructure()
-	{
+	public function getStructure(): array
+    {
 		foreach($this->matches[0] as $match) {
 			$match = trim(str_replace(';', '', $match));
 

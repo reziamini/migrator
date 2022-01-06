@@ -2,6 +2,7 @@
 
 namespace Migrator\Http\Livewire\Migration;
 
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Migrator\Service\MigratorParser;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,7 @@ class Single extends Component
     public $batch;
     public $structure;
 
-    public function mount($migration)
+    public function mount($migration): void
     {
         $this->migrationFile = $migration->getFilename();
         $migratorParser = new MigratorParser($this->migrationFile);
@@ -31,7 +32,7 @@ class Single extends Component
         $this->structure = $migratorParser->getStructure();
     }
 
-    public function migrate()
+    public function migrate(): void
     {
         try {
             \Artisan::call('migrate', [
@@ -53,7 +54,7 @@ class Single extends Component
         $this->emit('migrationUpdated');
     }
 
-    public function refresh()
+    public function refresh(): void
     {
         \Artisan::call('migrate:refresh', [
             '--path' => $this->getPath()
@@ -67,7 +68,7 @@ class Single extends Component
         $this->emit('migrationUpdated');
     }
 
-    public function removeTable()
+    public function removeTable(): void
     {
         \Artisan::call('migrate:reset', [
             '--path' => $this->getPath(),
@@ -82,7 +83,7 @@ class Single extends Component
         $this->emit('migrationUpdated');
     }
 
-    public function deleteMigration()
+    public function deleteMigration(): void
     {
         $this->removeTable();
 
@@ -93,7 +94,7 @@ class Single extends Component
         $this->emit('migrationUpdated');
     }
 
-    public function rollback()
+    public function rollback(): void
     {
         $migrationTable = config('database.migrations');
         \DB::table($migrationTable)
@@ -122,12 +123,12 @@ class Single extends Component
         $this->emit('migrationUpdated');
     }
 
-    public function render()
+    public function render(): View
     {
         return view('migrator::livewire.migration.single');
     }
 
-    private function getPath()
+    private function getPath(): string
     {
         return 'database'.DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.$this->migrationFile;
     }
