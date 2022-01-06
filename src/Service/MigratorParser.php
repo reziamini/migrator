@@ -11,9 +11,13 @@ class MigratorParser
 {
     public $name;
 
-    public function __construct($name)
+    public $migration;
+
+    public function __construct($migration)
     {
-        $this->name = $name;
+
+        $this->name = $migration->getFilename();
+        $this->migration = $migration;
     }
 
     public function getName()
@@ -40,7 +44,7 @@ class MigratorParser
 
     public function getConnectionName()
     {
-        $file = database_path('migrations'.DIRECTORY_SEPARATOR.$this->name);
+        $file = $this->migration->getPathname();
         $migrationObject = (function () use ($file) {
             return $this->resolvePath($file);
         })->call(app('migrator'));
@@ -50,9 +54,7 @@ class MigratorParser
 
     public function getStructure()
     {
-        $file = database_path('migrations'.DIRECTORY_SEPARATOR.$this->name);
-
-        $contents = file_get_contents($file);
+        $contents = $this->migration->getContents();
 
         $searchForOne = '$table->';
 
