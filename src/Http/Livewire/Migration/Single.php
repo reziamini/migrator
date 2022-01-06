@@ -100,11 +100,9 @@ class Single extends Component
             ->where('migration', str_replace('.php', '', $this->migrationFile))
             ->update(['batch' => \DB::table($migrationTable)->max('batch')]);
 
-        $path = $this->migrationPath;
-
         try {
             \Artisan::call('migrate:rollback', [
-                '--path' => $path,
+                '--path' => $this->getPath(),
             ]);
 
             $message = 'Migration was rolled back.';
