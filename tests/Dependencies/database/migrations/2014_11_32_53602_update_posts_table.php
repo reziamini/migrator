@@ -4,8 +4,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UsersWithConnection extends Migration
+class UpdatePostsTable extends Migration
 {
+    public function __construct()
+    {
+        $this->connection = 'Hello_world';
+    }
+
     /**
      * Run the migrations.
      *

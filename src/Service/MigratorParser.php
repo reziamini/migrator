@@ -41,33 +41,11 @@ class MigratorParser
     public function getConnectionName()
     {
         $file = database_path('migrations'.DIRECTORY_SEPARATOR.$this->name);
+        $migrationObject = (function () use ($file) {
+            return $this->resolvePath($file);
+        })->call(app('migrator'));
 
-        $contents = file_get_contents($file);
-
-        $searchForOne = '$connection';
-        $searchForTwo = 'Schema::connection';
-
-        $patternOne = preg_quote($searchForOne, '/');
-        $patternOne = "/^.*$patternOne.*\$/m";
-
-        $patternTwo = preg_quote($searchForTwo, '/');
-        $patternTwo = "/^.*$patternTwo.*\$/m";
-
-        if (preg_match($patternOne, $contents, $matches)){
-            $match = trim(implode("\n", $matches));
-            $match = str_replace('"', "'", $match);
-
-            return substr($match, stripos($match, "'") + 1, (strripos($match, "'") - stripos($match, "'")) - 1);
-        }
-
-        if(preg_match($patternTwo, $contents, $matches)){
-            $match = trim(implode("\n", $matches));
-            preg_match('/Schema::connection\(["|\'](.*?)["|\']\)/', $match, $m);
-
-            return $m[1] ?? '';
-        }
-
-        return \Config::get('database.default');
+        return $migrationObject->getConnection() ?: config('database.default');
     }
 
     public function getStructure()

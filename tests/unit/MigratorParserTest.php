@@ -7,7 +7,6 @@ namespace MigratorTest\unit;
 use Migrator\Service\MigratorParser;
 use PHPUnit\Framework\TestCase;
 use Illuminate\Support\Carbon;
-use Illuminate\Foundation\Application;
 
 class MigratorParserTest extends TestCase
 {
@@ -32,17 +31,4 @@ class MigratorParserTest extends TestCase
         Carbon::setTestNow(Carbon::create(2022, 9, 15));
         $this->assertEquals($parser->getDate(), "1 year ago");
     }
-
-    /** @test * */
-    public function migration_connection_will_be_parsed(){
-        $app = new Application;
-        $app->useDatabasePath(__DIR__.'/../Dependencies/database');
-
-        $parser = new MigratorParser('users_with_connection1.php');
-        $this->assertEquals($parser->getConnectionName(), 'pgsql');
-
-        $parser = new MigratorParser('users_with_connection2.php');
-        $this->assertEquals($parser->getConnectionName(), 'pgsql');
-    }
-
 }
