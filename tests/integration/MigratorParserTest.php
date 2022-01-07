@@ -2,24 +2,34 @@
 
 namespace MigratorTest\integration;
 
-use MigratorTest\TestCase;
 use Migrator\Service\MigratorParser;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Foundation\Application;
+use MigratorTest\TestCase;
 
 class MigratorParserTest extends TestCase
 {
     /** @test * */
-    public function connection_will_be_returned_default_value(){
-        $app = new Application;
-        $app->useDatabasePath(__DIR__.'/../Dependencies/database');
+    public function connection_will_be_returned_default_value()
+    {
+        // arrange
+        app()->useDatabasePath(__DIR__.'/../Dependencies/database');
+        config()->set('database.default', 'example_connection');
 
-        Config::shouldReceive('get')
-            ->with('database.default')
-            ->once()
-            ->andReturn('test_database');
+        //act
+        $parser = new MigratorParser('2014_11_32_53600_create_users_table.php');
 
-        $parser = new MigratorParser('user.php');
-        $this->assertEquals($parser->getConnectionName(), 'test_database');
+        // assert
+        $this->assertEquals($parser->getConnectionName(), 'example_connection');
+    }
+
+    /** @test * */
+    public function migration_connection_will_be_parsed()
+    {
+        app()->useDatabasePath(__DIR__.'/../Dependencies/database');
+
+        $parser = new MigratorParser('2014_11_32_53601_create_posts_table.php');
+        $this->assertEquals($parser->getConnectionName(), 'custom_connection');
+
+        $parser = new MigratorParser('2014_11_32_53602_update_posts_table.php');
+        $this->assertEquals($parser->getConnectionName(), 'Hello_world');
     }
 }

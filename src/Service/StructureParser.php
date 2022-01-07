@@ -45,7 +45,7 @@ Class StructureParser {
 
 		preg_match('/->default\((.*?)\).*/', $match, $newMatch);
 
-        return str_replace(['"', '\''], '', $newMatch[1]);
+        return str_replace(['"', '\''], '', $newMatch[1] ?? '');
 	}
 
 	private function checkNullable($match)
@@ -82,6 +82,6 @@ Class StructureParser {
 	{
         preg_match("/^(\w+)\(.*\).*/si", $match, $newMatches);
 
-        return $newMatches[1];
+        return $newMatches[1] ?? '';
 	}
 }

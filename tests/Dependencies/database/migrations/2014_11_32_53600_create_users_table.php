@@ -4,14 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UsersWithConnection extends Migration
+class CreateUsersTable extends Migration
 {
-    /**
-     * The database connection that should be used by the migration.
-     *
-     * @var string
-     */
-    protected $connection = 'pgsql';
 
     /**
      * Run the migrations.
@@ -20,7 +14,7 @@ class UsersWithConnection extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('user', function (Blueprint $table) {
             //
         });
     }
@@ -32,7 +26,7 @@ class UsersWithConnection extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('user', function (Blueprint $table) {
             //
         });
     }

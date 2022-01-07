@@ -15,19 +15,24 @@ class MigratorServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/migrator.php', 'migrator');
     }
 
-    public function boot(): void
+    public function boot()
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'migrator');
-        $this->loadRoutesFrom(__DIR__ . '/../routes/migrator.php');
+        $local = $this->app->environment('local');
+        $only = config('migrator.local', true);
 
-        $this->publishes([
-            __DIR__ . '/../config' => config_path()
-        ], 'migrator-config');
+        if ($local || ! $only) {
+            $this->loadViewsFrom(__DIR__.'/../resources/views', 'migrator');
+            $this->loadRoutesFrom(__DIR__.'/../routes/migrator.php');
 
-        $this->registerLivewireComponents();
+            $this->publishes([
+                __DIR__.'/../config' => config_path()
+            ], 'migrator-config');
+
+            $this->registerLivewireComponents();
+        }
     }
 
-    private function registerLivewireComponents(): void
+    private function registerLivewireComponents()
     {
         Livewire::component('migrator::livewire.migration.create', Create::class);
         Livewire::component('migrator::livewire.migration.read', Read::class);

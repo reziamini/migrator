@@ -64,8 +64,10 @@ class Read extends Component
         if (!Schema::hasTable(config('database.migrations'))){
             Artisan::call('migrate:install');
         }
-
-        $migrations = File::files(database_path('migrations'));
+        $migrations = [];
+        foreach (self::migrationDirs() as $dir) {
+            $migrations = array_merge(File::files($dir), $migrations);
+        }
 
         return view('migrator::livewire.migration.read', ['migrations' => $migrations])
             ->layout('migrator::layout', ['title' => 'Migration List']);
@@ -79,4 +81,15 @@ class Read extends Component
         ]);
     }
 
+    public static function migrationDirs()
+    {
+        $migrationDirs = [];
+        $migrationDirs[] = app()->databasePath().DIRECTORY_SEPARATOR.'migrations';
+
+        foreach (app('migrator')->paths() as $path) {
+            $migrationDirs[] = $path;
+        }
+
+        return $migrationDirs;
+    }
 }

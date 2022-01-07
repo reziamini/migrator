@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 class Single extends Component
 {
 
+    public $migrationPath;
     public $migrationFile;
     public $migrationName;
     public $migrationConnectionName;
@@ -20,8 +21,9 @@ class Single extends Component
 
     public function mount($migration)
     {
+        $this->migrationPath = $migration->getPathname();
         $this->migrationFile = $migration->getFilename();
-        $migratorParser = new MigratorParser($this->migrationFile);
+        $migratorParser = new MigratorParser($migration);
         $this->migrationName = $migratorParser->getName();
         $this->migrationConnectionName = $migratorParser->getConnectionName();
         $this->migrationCreatedAt = $migratorParser->getDate();
@@ -86,9 +88,7 @@ class Single extends Component
     {
         $this->removeTable();
 
-        $path = database_path('migrations'.DIRECTORY_SEPARATOR.$this->migrationFile);
-
-        File::delete($path);
+        File::delete($this->migrationPath);
 
         $this->emit('migrationUpdated');
     }
@@ -100,11 +100,9 @@ class Single extends Component
             ->where('migration', str_replace('.php', '', $this->migrationFile))
             ->update(['batch' => \DB::table($migrationTable)->max('batch')]);
 
-        $path = 'database'.DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.$this->migrationFile;
-
         try {
             \Artisan::call('migrate:rollback', [
-                '--path' => $path,
+                '--path' => $this->getPath(),
             ]);
 
             $message = 'Migration was rolled back.';
@@ -129,7 +127,7 @@ class Single extends Component
 
     private function getPath()
     {
-        return 'database'.DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.$this->migrationFile;
+        return str_replace(base_path(), '', $this->migrationPath);
     }
 
 }

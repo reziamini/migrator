@@ -11,9 +11,13 @@ class MigratorParser
 {
     public $name;
 
-    public function __construct($name)
+    public $migration;
+
+    public function __construct($migration)
     {
-        $this->name = $name;
+
+        $this->name = $migration->getFilename();
+        $this->migration = $migration;
     }
 
     public function getName()
@@ -40,41 +44,17 @@ class MigratorParser
 
     public function getConnectionName()
     {
-        $file = database_path('migrations'.DIRECTORY_SEPARATOR.$this->name);
+        $file = $this->migration->getPathname();
+        $migrationObject = (function () use ($file) {
+            return $this->resolvePath($file);
+        })->call(app('migrator'));
 
-        $contents = file_get_contents($file);
-
-        $searchForOne = '$connection';
-        $searchForTwo = 'Schema::connection';
-
-        $patternOne = preg_quote($searchForOne, '/');
-        $patternOne = "/^.*$patternOne.*\$/m";
-
-        $patternTwo = preg_quote($searchForTwo, '/');
-        $patternTwo = "/^.*$patternTwo.*\$/m";
-
-        if (preg_match($patternOne, $contents, $matches)){
-            $match = trim(implode("\n", $matches));
-            $match = str_replace('"', "'", $match);
-
-            return substr($match, stripos($match, "'") + 1, (strripos($match, "'") - stripos($match, "'")) - 1);
-        }
-
-        if(preg_match($patternTwo, $contents, $matches)){
-            $match = trim(implode("\n", $matches));
-            preg_match('/Schema::connection\(["|\'](.*)["|\']\)/', $match, $m);
-
-            return $m[1];
-        }
-
-        return \Config::get('database.default');
+        return $migrationObject->getConnection() ?: config('database.default');
     }
 
     public function getStructure()
     {
-        $file = database_path('migrations'.DIRECTORY_SEPARATOR.$this->name);
-
-        $contents = file_get_contents($file);
+        $contents = $this->migration->getContents();
 
         $searchForOne = '$table->';
 
@@ -84,8 +64,13 @@ class MigratorParser
 
         preg_match_all($patternOne, $contents, $matches);
 
-        $structure = new StructureParser($matches);
+        try {
+            $structure = new StructureParser($matches);
 
-        return $structure->getStructure();
+            return $structure->getStructure();
+        } catch (\Exception $exception){
+            return [];
+        }
+
     }
 }

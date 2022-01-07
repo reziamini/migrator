@@ -21,7 +21,7 @@ class SafeMigrate
     {
         preg_match("/.*references `(\w+)`.*/", $error, $match);
 
-        return $match[1];
+        return $match[1] ?? '';
     }
 
     public function getMigrationFiles()
