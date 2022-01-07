@@ -29,7 +29,16 @@ Class StructureParser {
             ];
 		}
 
-		return array_filter($this->structure, fn($value) => !is_null($value['type']));
+		$phpVersion = explode('.', phpversion());
+
+        if ($phpVersion[0] > 7 && $phpVersion[1] < 4) {
+            return array_filter($this->structure, function ($value) {
+                return ! is_null($value['type']);
+            });
+        }
+        else {
+            return array_filter($this->structure, fn($value) => ! is_null($value['type']));
+        }
 	}
 
 	private function checkUnique($match)
