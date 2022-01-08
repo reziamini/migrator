@@ -2,7 +2,7 @@
 
 return [
     // Path to access migrator page
-    'route' => 'migrator',
+    'route'      => 'migrator',
 
     // Middleware to authorize the admin user
     'middleware' => 'auth',
@@ -15,5 +15,15 @@ return [
     | Flag that preventing showing commands if environment is on production
     |
     */
-    'local' => true
+    'local'      => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Paginate show data per page
+    |--------------------------------------------------------------------------
+    |
+    | Showing data with default paginate per page 10
+    |
+    */
+    'per_page'   => 10,
 ];

@@ -34,6 +34,10 @@
                             @endforeach
                         </tbody>
                     </table>
+
+                    <div class="p-2">
+                        {!! $migrations->links() !!}
+                    </div>
                 </div>
             </div>
         </div>
