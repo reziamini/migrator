@@ -56,7 +56,11 @@ class MigratorParser
     {
         $contents = $this->migration->getContents();
 
-        $searchForOne = '$table->';
+        preg_match('/Schema::.+(?:\n+)?function\s?\(.*?\$(\w+)/mi', $contents, $m);
+
+        $tableName = $m[1] ?? 'table';
+
+        $searchForOne = '$'.$tableName.'->';
 
         $patternOne = preg_quote($searchForOne, '/');
 
