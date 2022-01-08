@@ -29,7 +29,9 @@ Class StructureParser {
             ];
 		}
 
-		return array_filter($this->structure, fn($value) => !is_null($value['type']));
+		return array_filter($this->structure, function($value) {
+		    return !is_null($value['type']);
+		});
 	}
 
 	private function checkUnique($match)
