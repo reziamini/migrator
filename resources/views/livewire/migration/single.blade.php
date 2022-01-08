@@ -1,6 +1,7 @@
 <tr x-data="{ DeleteModal: false, RollbackModal: false, StructureModal: false }">
     @php
-        $exists = DB::table(config('database.migrations'))->where('migration', str_replace('.php', '', $migrationFile))->exists();
+        $migrationData = DB::table(config('database.migrations'))->where('migration', str_replace('.php', '', $migrationFile));
+        $exists = $migrationData->exists();
         $maxBatch = DB::table(config('database.migrations'))->max('batch');
     @endphp
     <td class="px-6 py-4 whitespace-nowrap">
@@ -16,7 +17,7 @@
    <td class="px-6 py-4 whitespace-nowrap">
         @if($exists)
             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-              {{$batch}}
+              {{ $migrationData->first()->batch }}
             </span>
         @else
             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
