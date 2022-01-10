@@ -3,7 +3,7 @@ Migrator is a GUI migration manager for Laravel which you can create, manage and
 
 Also, with Migrator you will be able to use a feature called "Safe Migrate" which allows you to run migration without fear of foreign key sorting, it will automatically run migrations in the correct order and you don't need to change the migrations filename.
 
-![Migrator photo](https://podcode.ir/img/migrator.png)
+![Migrator photo](https://user-images.githubusercontent.com/86796762/148734667-b50955b3-e8d8-4a6d-8057-8a1c293eb75a.png)
 ## Installation:
 
 To install Migrator you can execute this command:
