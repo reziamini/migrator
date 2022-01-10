@@ -2,17 +2,25 @@
 
 namespace Migrator\Http\Livewire\Migration;
 
-use Livewire\Component;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Str;
-use Migrator\Service\SafeMigrate;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
+use Livewire\Component;
+use Migrator\Http\Traits\Paginate;
+use Migrator\Service\SafeMigrate;
 
 class Read extends Component
 {
+    use Paginate;
 
     protected $listeners = ['migrationUpdated'];
+
+    public function __construct()
+    {
+        $this->perPage = config('migrator.per_page', 10);
+        $this->path = config('migrator.route', 'migrator');
+    }
 
     public function migrationUpdated()
     {
@@ -69,6 +77,8 @@ class Read extends Component
             $migrations = array_merge(File::files($dir), $migrations);
         }
 
+        $migrations = $this->withPaginate($migrations);
+
         return view('migrator::livewire.migration.read', ['migrations' => $migrations])
             ->layout('migrator::layout', ['title' => 'Migration List']);
     }
@@ -91,5 +101,10 @@ class Read extends Component
         }
 
         return $migrationDirs;
+    }
+
+    public function withPaginate($data)
+    {
+        return $this->paginate($data, $this->perPage)->withPath($this->path);
     }
 }
