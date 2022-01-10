@@ -34,6 +34,12 @@
                             @endforeach
                         </tbody>
                     </table>
+
+                    @if($migrations->lastPage() > 1)
+                        <div class="px-6 py-3">
+                            {{ $migrations->links() }}
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
