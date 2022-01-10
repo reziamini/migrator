@@ -9,13 +9,7 @@ use Illuminate\Support\Collection;
 trait Paginate
 {
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-
-    public function paginate($items, $perPage = 5, $page = null, $options = [])
+    public function paginate($items, $perPage, $page = null, $options = [])
     {
         $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
 

@@ -16,12 +16,6 @@ class Read extends Component
 
     protected $listeners = ['migrationUpdated'];
 
-    public function __construct()
-    {
-        $this->perPage = config('migrator.per_page', 10);
-        $this->path = config('migrator.route', 'migrator');
-    }
-
     public function migrationUpdated()
     {
         // just to update the list
@@ -72,12 +66,8 @@ class Read extends Component
         if (!Schema::hasTable(config('database.migrations'))){
             Artisan::call('migrate:install');
         }
-        $migrations = [];
-        foreach (self::migrationDirs() as $dir) {
-            $migrations = array_merge(File::files($dir), $migrations);
-        }
 
-        $migrations = $this->withPaginate($migrations);
+        $migrations = $this->getMigrationsForView();
 
         return view('migrator::livewire.migration.read', ['migrations' => $migrations])
             ->layout('migrator::layout', ['title' => 'Migration List']);
@@ -91,7 +81,7 @@ class Read extends Component
         ]);
     }
 
-    public static function migrationDirs()
+    private static function migrationDirs()
     {
         $migrationDirs = [];
         $migrationDirs[] = app()->databasePath().DIRECTORY_SEPARATOR.'migrations';
@@ -103,8 +93,24 @@ class Read extends Component
         return $migrationDirs;
     }
 
-    public function withPaginate($data)
+    private function withPaginate($data)
     {
-        return $this->paginate($data, $this->perPage)->withPath($this->path);
+        $perPage = config('migrator.per_page', 10);
+        $path = config('migrator.route', 'migrator');
+
+        return $this->paginate($data, $perPage)->withPath($path);
+    }
+
+    private function getMigrationsForView()
+    {
+        $migrations = [];
+
+        foreach (self::migrationDirs() as $dir) {
+            $migrations = array_merge(File::files($dir), $migrations);
+        }
+
+        $migrations = $this->withPaginate($migrations);
+
+        return $migrations;
     }
 }
