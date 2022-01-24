@@ -7,12 +7,13 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Livewire\WithPagination;
 use Migrator\Http\Traits\Paginate;
 use Migrator\Service\SafeMigrate;
 
 class Read extends Component
 {
-    use Paginate;
+    use Paginate, WithPagination;
 
     protected $listeners = ['migrationUpdated'];
 
