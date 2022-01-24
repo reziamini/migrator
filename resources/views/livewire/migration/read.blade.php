@@ -76,7 +76,7 @@
                             </h3>
                             <div class="mt-2">
                                 <p class="text-sm text-gray-500">
-                                    Are You sure to fresh migrations?
+                                    Are you sure to fresh migrations?
                                 </p>
                             </div>
                         </div>
@@ -121,7 +121,7 @@
                             </h3>
                             <div class="mt-2">
                                 <p class="text-sm text-gray-500">
-                                    Are You sure to migrate the migrations?
+                                    Are you sure to migrate the migrations?
                                 </p>
                                 <div class="mt-2">
                                     <span class="text-xs text-red-600 mt-4">Note: Safe migrate will fresh the database then re-run migrations!</span>
