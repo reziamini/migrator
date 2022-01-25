@@ -15,7 +15,7 @@ return [
     | Middlewares which are used to access Migrator route
     |--------------------------------------------------------------------------
     */
-    'middleware' => 'auth',
+    'middleware' => ['auth'],
 
     /*
     |--------------------------------------------------------------------------
@@ -28,7 +28,7 @@ return [
     /*
     |--------------------------------------------------------------------------
     | Paginate show data per page
-    | Showing data with default paginate per page 10
+    | Showing data with default paginate per page 15
     |--------------------------------------------------------------------------
     */
     'per_page' => 15,
