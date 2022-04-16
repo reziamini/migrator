@@ -2,22 +2,48 @@
 
 namespace Migrator\Http\Livewire\Migration;
 
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Validation\Rule;
 
+/**
+ * Class Create
+ * @package Migrator\Http\Livewire\Migration
+ */
 class Create extends Component
 {
+    /**
+     * @var string Migration name
+     */
     public $name;
+
+    /**
+     * @var string Table name
+     */
     public $table;
+
+    /**
+     * @var string Database connection name
+     */
     public $connection;
+
+    /**
+     * @var string Migration Type
+     */
     public $type = 'create';
 
+    /**
+     * Component Mount.
+     */
     public function mount()
     {
         $this->connection = config('database.default');
     }
 
+    /**
+     * Create a migration from user input.
+     */
     public function create()
     {
         $this->validate();
@@ -47,6 +73,11 @@ class Create extends Component
         $this->emit('migrationUpdated');
     }
 
+    /**
+     * Render view.
+     *
+     * @return View
+     */
     public function render()
     {
         $connections = array_keys(config('database.connections'));
@@ -54,6 +85,9 @@ class Create extends Component
         return view('migrator::livewire.migration.create', compact('connections'));
     }
 
+    /**
+     * Alter the migration file to add the databsae connection name.
+     */
     private function addConnection()
     {
         $output = Artisan::output();
@@ -73,6 +107,11 @@ class Create extends Component
         file_put_contents($file, $finalContent);
     }
 
+    /**
+     * Get migration creation validation rules.
+     *
+     * @return array
+     */
     protected function getRules()
     {
         return [

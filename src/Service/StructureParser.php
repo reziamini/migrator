@@ -2,17 +2,38 @@
 
 namespace Migrator\Service;
 
+/**
+ * Class StructureParser.
+ * This class parses the fields inside the migration.
+ * @package Migrator\Service
+ */
 Class StructureParser {
 
-	public $matches;
-	public $structure = array();
+    /**
+     * @var array Field matches that are not structured
+     */
+    public $matches;
 
-	public function __construct($matches)
+    /**
+     * @var array Structured field list
+     */
+    public $structure = array();
+
+    /**
+     * StructureParser constructor.
+     * @param array $matches
+     */
+    public function __construct($matches)
     {
         $this->matches = $matches;
     }
 
-	public function getStructure()
+    /**
+     * Get the structured field list of all matched fields.
+     *
+     * @return array
+     */
+    public function getStructure()
 	{
 		foreach($this->matches[0] as $match) {
 			$match = trim(str_replace(';', '', $match));
@@ -34,12 +55,24 @@ Class StructureParser {
 		});
 	}
 
-	private function checkUnique($match)
+    /**
+     * Check if the field has the unique attribute.
+     *
+     * @param string $match Field
+     * @return false|int
+     */
+    private function checkUnique($match)
 	{
 		return strpos($match, '->unique()');
 	}
 
-	private function checkDefault($match)
+    /**
+     * Check if the field has a default value.
+     *
+     * @param string $match Field
+     * @return false|string
+     */
+    private function checkDefault($match)
 	{
 		if (!strpos($match, '->default(')) {
             return false;
@@ -50,12 +83,25 @@ Class StructureParser {
         return str_replace(['"', '\''], '', $newMatch[1] ?? '');
 	}
 
-	private function checkNullable($match)
+    /**
+     * Check if the field has the nullable attribute.
+     *
+     * @param string $match
+     * @return false|int
+     */
+    private function checkNullable($match)
 	{
 		return strpos($match, '->nullable()');
 	}
 
-	private function getName($match, $type)
+    /**
+     * Get the name of field.
+     *
+     * @param string $match
+     * @param string $type
+     * @return false|string
+     */
+    private function getName($match, $type)
 	{
 	    $matches = [
 	        'id' => 'id',
@@ -80,7 +126,13 @@ Class StructureParser {
 		return substr($match, stripos($match, "'") + 1, stripos(substr($match, stripos($match, "'") + 1), "'"));
 	}
 
-	private function getType($match)
+    /**
+     * Get the type of field.
+     *
+     * @param string $match
+     * @return mixed|string
+     */
+    private function getType($match)
 	{
         preg_match("/^(\w+)\(.*\).*/si", $match, $newMatches);
 

@@ -6,20 +6,42 @@ namespace Migrator\Service;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
+use Symfony\Component\Finder\SplFileInfo;
 
+/**
+ * Class MigratorParser.
+ * This class takes a migration file as input and parses its content.
+ * @package Migrator\Service
+ */
 class MigratorParser
 {
+    /**
+     * @var string Migration Name
+     */
     public $name;
 
+    /**
+     * @var SplFileInfo Migration File
+     */
     public $migration;
 
+    /**
+     * MigratorParser constructor.
+     * @param $migration
+     */
     public function __construct($migration)
     {
-
         $this->name = $migration->getFilename();
         $this->migration = $migration;
     }
 
+    /**
+     * Get a human-readable name from the migration name.
+     * i.e. If the migration name is '2014_10_12_000000_create_users_table'
+     * it will return 'Create users table'.
+     *
+     * @return string
+     */
     public function getName()
     {
         $name = $this->name;
@@ -31,6 +53,11 @@ class MigratorParser
         return $name;
     }
 
+    /**
+     * Get the migration creation date difference from today in a human-readable format.
+     *
+     * @return string
+     */
     public function getDate()
     {
         $date = $this->name;
@@ -42,6 +69,11 @@ class MigratorParser
         return Carbon::createFromFormat('Y m d His ', $date)->ago();
     }
 
+    /**
+     * Get the migration connection name.
+     *
+     * @return string
+     */
     public function getConnectionName()
     {
         $file = $this->migration->getPathname();
@@ -52,6 +84,11 @@ class MigratorParser
         return $migrationObject->getConnection() ?: config('database.default');
     }
 
+    /**
+     * Get structure content of migration.
+     *
+     * @return array
+     */
     public function getStructure()
     {
         $contents = $this->migration->getContents();
