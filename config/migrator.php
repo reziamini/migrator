@@ -3,16 +3,16 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | Migrator Route
-    | Migrator route address to access the module: 'localhost:8000/migrator'
+    | Routing
+    | Migrator route address to access the module, i.e. 'localhost:8000/migrator'
     |--------------------------------------------------------------------------
     */
     'route' => 'migrator',
 
     /*
     |--------------------------------------------------------------------------
-    | Middlewares for Migrator
-    | Middlewares which are used to access Migrator route
+    | Middlewares
+    | Middlewares used to access the Migrator route
     |--------------------------------------------------------------------------
     */
     'middleware' => ['auth'],
@@ -20,15 +20,15 @@ return [
     /*
     |--------------------------------------------------------------------------
     | Only on local
-    | Flag that preventing showing commands if environment is on production
+    | The flag that prevents showing commands if the environment is in production
     |--------------------------------------------------------------------------
     */
     'local' => true,
 
     /*
     |--------------------------------------------------------------------------
-    | Paginate show data per page
-    | Showing data with default paginate per page 15
+    | Pagination
+    | The number of items per page in pagination
     |--------------------------------------------------------------------------
     */
     'per_page' => 15,
