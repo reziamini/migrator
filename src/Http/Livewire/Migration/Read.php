@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Migrator\Http\Traits\Paginate;
+use Migrator\Service\MigratorParser;
 use Migrator\Service\SafeMigrate;
 
 /**
@@ -20,6 +21,11 @@ use Migrator\Service\SafeMigrate;
 class Read extends Component
 {
     use Paginate, WithPagination;
+
+    /**
+     * @var string search name for migration
+     */
+    public $search;
 
     /**
      * @var string[] List of listeners.
@@ -97,6 +103,8 @@ class Read extends Component
         }
 
         $migrations = $this->getMigrationsForView();
+        $migrations = $this->filterMigrationsBySearchValue($migrations);
+        $migrations =  $this->withPaginate($migrations);
 
         return view('migrator::livewire.migration.read', ['migrations' => $migrations])
             ->layout('migrator::layout', ['title' => 'Migration List']);
@@ -150,7 +158,7 @@ class Read extends Component
     /**
      * Get the list of all migrations in the app, including those in the custom migration directories.
      *
-     * @return LengthAwarePaginator
+     * @return array
      */
     private function getMigrationsForView()
     {
@@ -160,8 +168,24 @@ class Read extends Component
             $migrations = array_merge(File::files($dir), $migrations);
         }
 
-        $migrations = $this->withPaginate($migrations);
+        return $migrations;
+    }
 
+    /*
+     * filter migrations by search value
+     *
+     * @return array
+     */
+    public function filterMigrationsBySearchValue($migrations) : array
+    {
+        if (!empty($this->search)){
+            return collect($migrations)->filter(function ($migration) {
+                $migratorParser = resolve(MigratorParser::class , ['migration' => $migration]);
+                if (Str::contains($migratorParser->getName(),$this->search) ){
+                    return $migration;
+                }
+            })->toArray();
+        }
         return $migrations;
     }
 }

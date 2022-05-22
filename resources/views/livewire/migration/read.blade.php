@@ -24,14 +24,23 @@
                                 Created At
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Action
+                                <span class="mr-5">Action</span>
+                                <input type="text" class="focus:outline-none focus:border-gray-400 border border-gray-200 rounded py-2 px-4 w-9/12 @error('search') border-red-300 @enderror" wire:model="search" placeholder="Search">
                             </th>
                         </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach($migrations as $key => $migration)
-                                @livewire('migrator::livewire.migration.single', ['migration' => $migration], key($loop->iteration))
-                            @endforeach
+                            @forelse($migrations as $key => $migration)
+                                @livewire('migrator::livewire.migration.single', ['migration' => $migration], key($key))
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-4 text-center">
+                                            <div class="text-gray-500">
+                                                No migration found.
+                                            </div>
+                                        </td>
+                                    </tr>
+                            @endforelse
                         </tbody>
                     </table>
 
