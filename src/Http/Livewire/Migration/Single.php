@@ -67,7 +67,6 @@ class Single extends Component
             ->where('migration', str_replace('.php', '', $this->migrationFile))
             ->first(['batch'])->batch ?? 0;
         $this->structure = $migratorParser->getStructure();
-        dd($this->structure);
     }
 
     /**
