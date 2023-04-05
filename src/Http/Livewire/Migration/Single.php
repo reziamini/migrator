@@ -52,6 +52,11 @@ class Single extends Component
     public $structure;
 
     /**
+     * @var array Migration raw queries
+     */
+    public $previewQueries;
+
+    /**
      * Component mount.
      * @param SplFileInfo $migration
      */
@@ -67,6 +72,7 @@ class Single extends Component
             ->where('migration', str_replace('.php', '', $this->migrationFile))
             ->first(['batch'])->batch ?? 0;
         $this->structure = $migratorParser->getStructure();
+        $this->previewQueries = $migratorParser->getPreview($migration->getPathname());
     }
 
     /**

@@ -221,6 +221,15 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="mt-8">
+                                    <h4>Preview queries:</h4>
+                                    @foreach($previewQueries as $query)
+                                        <div class="bg-gray-700 mt-2 py-3 px-2 rounded text-gray-200 mx-3">
+                                            {{ $query }}
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     </div>

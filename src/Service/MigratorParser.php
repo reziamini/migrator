@@ -4,6 +4,8 @@
 namespace Migrator\Service;
 
 
+use Illuminate\Database\ConnectionResolverInterface as Resolver;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Symfony\Component\Finder\SplFileInfo;
@@ -113,5 +115,33 @@ class MigratorParser
             return [];
         }
 
+    }
+
+    public function getPreview($migration, $method = 'up')
+    {
+        $migrator = app('migrator');
+
+        $migrationObject = new (resolve(Filesystem::class)->getRequire($migration));
+
+        $db = $migrator->resolveConnection(
+            $migrationObject->getConnection()
+        );
+
+        $queries = $db->pretend(function () use ($db, $migrationObject, $method) {
+            if (method_exists($migrationObject, $method)) {
+                $resolver = resolve(Resolver::class);
+                $previousConnection = $resolver->getDefaultConnection();
+
+                try {
+                    $resolver->setDefaultConnection($db->getName());
+
+                    $migrationObject->{$method}();
+                } finally {
+                    $resolver->setDefaultConnection($previousConnection);
+                }
+            }
+        });
+
+        return array_column($queries, 'query');
     }
 }
