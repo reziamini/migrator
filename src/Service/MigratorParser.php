@@ -119,29 +119,34 @@ class MigratorParser
 
     public function getPreview($migration, $method = 'up')
     {
-        $migrator = app('migrator');
+        try {
+            $migrator = app('migrator');
 
-        $migrationObject = new (resolve(Filesystem::class)->getRequire($migration));
+            $migrationObject = new (resolve(Filesystem::class)->getRequire($migration));
 
-        $db = $migrator->resolveConnection(
-            $migrationObject->getConnection()
-        );
+            $db = $migrator->resolveConnection(
+                $migrationObject->getConnection()
+            );
 
-        $queries = $db->pretend(function () use ($db, $migrationObject, $method) {
-            if (method_exists($migrationObject, $method)) {
-                $resolver = resolve(Resolver::class);
-                $previousConnection = $resolver->getDefaultConnection();
+            $queries = $db->pretend(function () use ($db, $migrationObject, $method) {
+                if (method_exists($migrationObject, $method)) {
+                    $resolver = resolve(Resolver::class);
+                    $previousConnection = $resolver->getDefaultConnection();
 
-                try {
-                    $resolver->setDefaultConnection($db->getName());
+                    try {
+                        $resolver->setDefaultConnection($db->getName());
 
-                    $migrationObject->{$method}();
-                } finally {
-                    $resolver->setDefaultConnection($previousConnection);
+                        $migrationObject->{$method}();
+                    } finally {
+                        $resolver->setDefaultConnection($previousConnection);
+                    }
                 }
-            }
-        });
+            });
 
-        return array_column($queries, 'query');
+            return array_column($queries, 'query');
+        } catch (\Exception $exception){
+            return [];
+        }
+
     }
 }
