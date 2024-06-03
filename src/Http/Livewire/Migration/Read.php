@@ -98,7 +98,7 @@ class Read extends Component
      */
     public function render()
     {
-        if (!Schema::hasTable(config('database.migrations'))){
+        if (!Schema::hasTable(config('migrator.migrations_table'))){
             Artisan::call('migrate:install');
         }
 

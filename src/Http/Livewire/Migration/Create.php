@@ -112,7 +112,7 @@ class Create extends Component
      *
      * @return array
      */
-    protected function getRules()
+    public function getRules()
     {
         return [
             'name' => 'required|min:2',
