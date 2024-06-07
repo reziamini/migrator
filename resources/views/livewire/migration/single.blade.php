@@ -1,8 +1,8 @@
 <tr x-data="{ DeleteModal: false, RollbackModal: false, StructureModal: false }">
     @php
-        $migrationData = DB::table(config('database.migrations'))->where('migration', str_replace('.php', '', $migrationFile));
+        $migrationData = DB::table(config('migrator.migrations_table'))->where('migration', str_replace('.php', '', $migrationFile));
         $exists = $migrationData->exists();
-        $maxBatch = DB::table(config('database.migrations'))->max('batch');
+        $maxBatch = DB::table(config('migrator.migrations_table'))->max('batch');
     @endphp
     <td class="px-6 py-4 whitespace-nowrap">
         <div class="text-sm">
