@@ -122,8 +122,11 @@ class MigratorParser
         try {
             $migrator = app('migrator');
 
-            $migrationObject = new (resolve(Filesystem::class)->getRequire($migration));
+            $filesystem = resolve(Filesystem::class);
 
+            $filePath = $filesystem->path($migration);
+            require_once $filePath;
+            
             $db = $migrator->resolveConnection(
                 $migrationObject->getConnection()
             );
